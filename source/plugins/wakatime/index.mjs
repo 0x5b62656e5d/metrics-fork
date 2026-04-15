@@ -24,6 +24,7 @@ export default async function({login, q, imports, data, account}, {enabled = fal
 
     //Querying api and format result (https://wakatime.com/developers#stats)
     console.debug(`metrics/compute/${login}/plugins > wakatime > querying api`)
+    console.debug(`Query URL: ${url}/api/v1/users/current/stats/${range}`)
     const {data: {data: stats}} = isHackatime ? await imports.axios.get(`${url}/api/v1/users/current/stats/${range}?api_key=${token}`) : await imports.axios.get(`${url}/api/v1/users/${user}/stats/${range}?api_key=${token}`)
 
     const projectStats = stats.projects?.map(({name, percent, total_seconds: total}) => ({name, percent: percent / 100, total})).sort((a, b) => b.percent - a.percent)
