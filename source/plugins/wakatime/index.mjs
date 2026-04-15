@@ -7,7 +7,7 @@ export default async function({login, q, imports, data, account}, {enabled = fal
       return null
 
     //Load inputs
-    let {sections, days, limit, url, user, "languages.other": others, "languages.ignored": _ignored, "repositories.visibility": repositoriesVisibility} = imports.metadata.plugins.wakatime.inputs({data, account, q})
+    let {sections, days, limit, url, "is.hackatime": isHackatime, user, "languages.other": others, "languages.ignored": _ignored, "repositories.visibility": repositoriesVisibility} = imports.metadata.plugins.wakatime.inputs({data, account, q})
 
     if (!limit)
       limit = void limit
@@ -24,7 +24,7 @@ export default async function({login, q, imports, data, account}, {enabled = fal
 
     //Querying api and format result (https://wakatime.com/developers#stats)
     console.debug(`metrics/compute/${login}/plugins > wakatime > querying api`)
-    const {data: {data: stats}} = url.contains("hackatime") ? await imports.axios.get(`${url}/api/v1/users/current/stats/${range}?api_key=${token}`) : await imports.axios.get(`${url}/api/v1/users/${user}/stats/${range}?api_key=${token}`)
+    const {data: {data: stats}} = isHackatime ? await imports.axios.get(`${url}/api/v1/users/current/stats/${range}?api_key=${token}`) : await imports.axios.get(`${url}/api/v1/users/${user}/stats/${range}?api_key=${token}`)
 
     const projectStats = stats.projects?.map(({name, percent, total_seconds: total}) => ({name, percent: percent / 100, total})).sort((a, b) => b.percent - a.percent)
     const projects = showOnlyGitHubPublicRepos ? await pickOnlyGitHubPublicRepos({limit, login, axios: imports.axios, projects: projectStats}) : projectStats?.slice(0, limit)

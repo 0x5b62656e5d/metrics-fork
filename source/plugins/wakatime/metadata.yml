@@ -27,6 +27,12 @@ inputs:
     type: token
     default: ""
 
+  plugin_wakatime_is_hackatime:
+    description: |
+      Use Hackatime API
+    type: boolean
+    default: no
+
   plugin_wakatime_url:
     description: |
       WakaTime URL
